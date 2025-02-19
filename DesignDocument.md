@@ -7,6 +7,199 @@ This document is meant to provide a tool for you to demonstrate the design proce
 ## (INITIAL DESIGN): Class Diagram 
 
 Place your class diagrams below. Make sure you check the file in the browser on github.com to make sure it is rendering correctly. If it is not, you will need to fix it. As a reminder, here is a link to tools that can help you create a class diagram: [Class Resources: Class Design Tools](https://github.com/CS5004-khoury-lionelle/Resources?tab=readme-ov-file#uml-design-tools)
+```mermaid
+classDiagram
+    direction TB
+
+    class IGameList {
+        <<interface>>
+        + ADD_ALL: String = "all"
+        + getGameNames(): List<String>
+        + clear(): void
+        + count(): int
+        + saveGame(filename: String): void
+        + addToList(str: String, filtered: Stream<BoardGame>): void
+        + removeFromList(str: String): void
+    }
+
+    class IPlanner {
+        <<interface>>
+        + filter(filter: String): Stream<BoardGame>
+        + filter(filter: String, sortOn: GameData): Stream<BoardGame>
+        + filter(filter: String, sortOn: GameData, ascending: boolean): Stream<BoardGame>
+        + reset(): void
+    }
+
+    class GameList {
+        + GameList()
+        + getGameNames(): List<String>
+        + clear(): void
+        + count(): int
+        + saveGame(filename: String): void
+        + addToList(str: String, filtered: Stream<BoardGame>): void
+        + removeFromList(str: String): void
+    }
+
+    class GamesLoader {
+        - DELIMITER: String = ","
+        - GamesLoader()
+        + loadGamesFile(filename: String): Set<BoardGame>
+        - toBoardGame(line: String, columnMap: Map<GameData, Integer>): BoardGame
+        - processHeader(header: String): Map<GameData, Integer>
+    }
+
+    class Planner {
+        + Planner(games: Set<BoardGame>)
+        + filter(filter: String): Stream<BoardGame>
+        + filter(filter: String, sortOn: GameData): Stream<BoardGame>
+        + filter(filter: String, sortOn: GameData, ascending: boolean): Stream<BoardGame>
+        + reset(): void
+    }
+
+    class ConsoleApp {
+        - IN: Scanner
+        - DEFAULT_FILENAME: String
+        - RND: Random
+        - current: Scanner
+        - gameList: IGameList
+        - planner: IPlanner
+        + ConsoleApp(gameList: IGameList, planner: IPlanner)
+        + start(): void
+        - randomNumber(): void
+        - processHelp(): void
+        - processFilter(): void
+        - printFilterStream(games: Stream<BoardGame>, sortON: GameData): void
+        - processListCommands(): void
+        - printCurrentList(): void
+        - nextCommand(): ConsoleText
+        - remainder(): String
+        - getInput(format: String, args: Object[]): String
+        - printOutput(format: String, args: Object[]): void
+    }
+
+    class BoardGame {
+        - name: String
+        - id: int
+        - minPlayers: int
+        - maxPlayers: int
+        - maxPlayTime: int
+        - minPlayTime: int
+        - difficulty: double
+        - rank: int
+        - averageRating: double
+        - yearPublished: int
+        + BoardGame(name: String, id: int, minPlayers: int, maxPlayers: int, minPlayTime: int, maxPlayTime: int, difficulty: double, rank: int, averageRating: double, yearPublished: int)
+        + getName(): String
+        + getId(): int
+        + getMinPlayers(): int
+        + getMaxPlayers(): int
+        + getMaxPlayTime(): int
+        + getMinPlayTime(): int
+        + getDifficulty(): double
+        + getRank(): int
+        + getRating(): double
+        + getYearPublished(): int
+        + toStringWithInfo(col: GameData): String
+        + toString(): String
+        + equals(obj: Object): boolean
+        + hashCode(): int
+        + main(args: String[]): void
+    }
+
+    class GameData {
+        <<enumeration>>
+        + NAME ("objectname")
+        + ID ("objectid")
+        + RATING ("average")
+        + DIFFICULTY ("avgweight")
+        + RANK ("rank")
+        + MIN_PLAYERS ("minplayers")
+        + MAX_PLAYERS ("maxplayers")
+        + MIN_TIME ("minplaytime")
+        + MAX_TIME ("maxplaytime")
+        + YEAR ("yearpublished")
+        - columnName: String
+        + getColumnName(): String
+        + fromColumnName(columnName: String): GameData
+        + fromString(name: String): GameData
+    }
+
+    class Operations {
+        <<enumeration>>
+        + EQUALS ("==")
+        + NOT_EQUALS ("!=")
+        + GREATER_THAN (">")
+        + LESS_THAN ("<")
+        + GREATER_THAN_EQUALS (">=")
+        + LESS_THAN_EQUALS ("<=")
+        + CONTAINS ("~=")
+        - operator: String
+        + getOperator(): String
+        + fromOperator(operator: String): Operations
+        + getOperatorFromStr(str: String): Operations
+    }
+
+    class ConsoleText {
+        <<enumeration>>
+        + WELCOME
+        + HELP
+        + INVALID
+        + GOODBYE
+        + PROMPT
+        + NO_FILTER
+        + NO_GAMES_LIST
+        + FILTERED_CLEAR
+        + LIST_HELP
+        + FILTER_HELP
+        + INVALID_LIST
+        + EASTER_EGG
+        + CMD_EASTER_EGG
+        + CMD_EXIT
+        + CMD_HELP
+        + CMD_QUESTION
+        + CMD_FILTER
+        + CMD_LIST
+        + CMD_SHOW
+        + CMD_ADD
+        + CMD_REMOVE
+        + CMD_CLEAR
+        + CMD_SAVE
+        + CMD_OPTION_ALL
+        + CMD_SORT_OPTION
+        + CMD_SORT_OPTION_DIRECTION_ASC
+        + CMD_SORT_OPTION_DIRECTION_DESC
+        + toString(): String
+        + fromString(str: String): ConsoleText
+    }
+
+    class BGArenaPlanner {
+        - DEFAULT_COLLECTION: String = "/collection.csv"
+        - BGArenaPlanner()
+        + main(args: String[]): void
+    }
+
+    IGameList <|-- GameList
+    IPlanner <|-- Planner
+
+    ConsoleApp o-- IGameList
+    ConsoleApp o-- IPlanner
+
+    ConsoleApp ..> ConsoleText
+    ConsoleApp ..> BoardGame
+    ConsoleApp ..> GameData
+
+    GamesLoader ..> BoardGame
+    GamesLoader ..> GameData
+
+    Planner ..> BoardGame
+    Planner ..> GameData
+    Planner ..> Operations
+
+    BGArenaPlanner ..> GamesLoader
+    BGArenaPlanner ..> Planner
+    BGArenaPlanner ..> GameList
+    BGArenaPlanner ..> ConsoleApp
+```
 
 ### Provided Code
 
