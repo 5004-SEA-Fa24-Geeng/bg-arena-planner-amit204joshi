@@ -17,6 +17,7 @@ import student.GameData;
  * setup to help out. 
  */
 public class TestPlanner {
+    static IPlanner planner;
     static Set<BoardGame> games;
 
     @BeforeAll
@@ -30,11 +31,12 @@ public class TestPlanner {
         games.add(new BoardGame("GoRami", 3, 6, 6, 40, 42, 5.0, 300, 8.5, 2002));
         games.add(new BoardGame("Monopoly", 8, 6, 10, 20, 1000, 1.0, 800, 5.0, 2007));
         games.add(new BoardGame("Tucano", 5, 10, 20, 60, 90, 6.0, 500, 8.0, 2004));
+
+        planner = new Planner(games);
     }
 
      @Test
     public void testFilterName() {
-        IPlanner planner = new Planner(games);
         List<BoardGame> filtered = planner.filter("name == Go").toList();
         assertEquals(1, filtered.size());
         assertEquals("Go", filtered.get(0).getName());
