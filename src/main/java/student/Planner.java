@@ -143,6 +143,14 @@ public class Planner implements IPlanner {
         String operator = components.getOperator();
         String value = components.getValue();
 
+        if (field == GameData.NAME) {
+            if (!Set.of("~=", "==", "!=").contains(operator)) {
+                throw new IllegalArgumentException(
+                        "Field 'name' does not support operator: " + operator
+                );
+            }
+        }
+
         return switch (field) {
             case NAME -> handleStringCondition(operator, value);
             case MIN_PLAYERS, MAX_PLAYERS, MIN_TIME, MAX_TIME, YEAR, RANK ->
