@@ -6,22 +6,22 @@ import java.util.stream.Stream;
 
 public class Planner implements IPlanner {
     /**
-     * Master list of all available games
+     * Master list of all available games.
      */
     private final List<BoardGame> allGames;
 
     /**
-     * Active filter conditions
+     * Active filter conditions.
      */
     private final List<FilterCondition> activeConditions = new ArrayList<>();
 
     /**
-     * Current sorting field (default: NAME)
+     * Current sorting field (default: NAME).
      */
     private GameData currentSortField = GameData.NAME;
 
     /**
-     * Sorting direction (default: ascending)
+     * Sorting direction (default: ascending).
      */
     private boolean isAscending = true;
 
@@ -139,9 +139,9 @@ public class Planner implements IPlanner {
      * @throws IllegalArgumentException If the field or operator is invalid
      */
     private FilterCondition createCondition(ConditionComponents components) {
-        GameData field = components.field;
-        String operator = components.operator;
-        String value = components.value;
+        GameData field = components.getField();
+        String operator = components.getOperator();
+        String value = components.getValue();
 
         return switch (field) {
             case NAME -> handleStringCondition(operator, value);
@@ -170,7 +170,7 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Handles conditions for integer fields
+     * Handles conditions for integer fields.
      *
      * @param field    The field to compare
      * @param operator The operator
@@ -231,7 +231,7 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Handles conditions for double fields
+     * Handles conditions for double fields.
      *
      * @param field    The field to compare
      * @param operator The operator

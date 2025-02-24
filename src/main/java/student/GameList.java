@@ -3,6 +3,9 @@ package student;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -12,6 +15,9 @@ import java.util.stream.Stream;
 
 public class GameList implements IGameList {
 
+    /**
+     * LinkedHashSet fot storing the games.
+     */
     private Set<BoardGame> games;
 
     /**
@@ -61,6 +67,15 @@ public class GameList implements IGameList {
     @Override
     public void saveGame(String filename) {
         List<String> names = getGameNames();
+        // Ensure parent directory exists
+        Path filePath = Paths.get(filename);
+        try {
+            Files.createDirectories(filePath.getParent()); // Create parent directories if missing
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create directory: " + filePath.getParent(), e);
+        }
+
+        // Save file
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
             names.forEach(writer::println);
         } catch (IOException e) {
@@ -141,7 +156,7 @@ public class GameList implements IGameList {
     // Internal Helper Methods
 
     /**
-     * Safely adds a game to the collection avoiding duplicates
+     * Safely adds a game to the collection avoiding duplicates.
      *
      * @param game The board game to add
      */
@@ -152,7 +167,7 @@ public class GameList implements IGameList {
     }
 
     /**
-     * Validates index boundaries for list operations
+     * Validates index boundaries for list operations.
      *
      * @param index The 0-based index to validate
      * @param max   The maximum allowed index (exclusive)
@@ -165,7 +180,7 @@ public class GameList implements IGameList {
     }
 
     /**
-     * Validates range parameters for selection operations
+     * Validates range parameters for selection operations.
      *
      * @param start 0-based starting index
      * @param end   0-based ending index
@@ -184,7 +199,7 @@ public class GameList implements IGameList {
     // Addition Operations
 
     /**
-     * Processes range addition pattern ("X-Y" format)
+     * Processes range addition pattern ("X-Y" format).
      *
      * @param range      The range string (e.g., "2-5")
      * @param sourceList Filtered list to select from
@@ -213,7 +228,7 @@ public class GameList implements IGameList {
     }
 
     /**
-     * Adds a single game from filtered list by index
+     * Adds a single game from filtered list by index.
      *
      * @param index      0-based index in filtered list
      * @param sourceList Pre-filtered game list
@@ -224,7 +239,7 @@ public class GameList implements IGameList {
     }
 
     /**
-     * Adds games by case-insensitive name matching
+     * Adds games by case-insensitive name matching.
      *
      * @param name       Target game name (case-insensitive)
      * @param sourceList Filtered list to search
@@ -248,7 +263,7 @@ public class GameList implements IGameList {
     // Removal Operations
 
     /**
-     * Generates alphabetically sorted view for removal operations
+     * Generates alphabetically sorted view for removal operations.
      *
      * @return List sorted by name (case-insensitive)
      */
@@ -259,7 +274,7 @@ public class GameList implements IGameList {
     }
 
     /**
-     * Processes range removal pattern ("X-Y" format)
+     * Processes range removal pattern ("X-Y" format).
      *
      * @param range      The range string (e.g., "3-7")
      * @param sortedList Alphabetically sorted game list
@@ -287,7 +302,7 @@ public class GameList implements IGameList {
     }
 
     /**
-     * Removes game by index from sorted view
+     * Removes game by index from sorted view.
      *
      * @param index      0-based index in sorted list
      * @param sortedList Alphabetically sorted game list
@@ -303,7 +318,7 @@ public class GameList implements IGameList {
     }
 
     /**
-     * Removes game by case-insensitive name match
+     * Removes game by case-insensitive name match.
      *
      * @param name Target game name (case-insensitive)
      * @throws IllegalArgumentException If no matching game found

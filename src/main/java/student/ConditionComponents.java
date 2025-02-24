@@ -4,17 +4,17 @@ public class ConditionComponents {
     /**
      * The field to filter on (e.g., GameData.MIN_PLAYERS, GameData.RATING).
      */
-    final GameData field;
+    private final GameData field;
 
     /**
      * The operator to use for comparison (e.g., ">", "<=", "~=").
      */
-    final String operator;
+    private final String operator;
 
     /**
      * The value to compare against (e.g., "4", "7.5", "Pandemic").
      */
-    final String value;
+    private final String value;
 
     /**
      * Constructs a new ConditionComponents object with the specified field, operator, and value.
@@ -57,5 +57,32 @@ public class ConditionComponents {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(value + " is not a double");
         }
+    }
+
+    /**
+     * Get the field of the condition.
+     *
+     * @return the field of the condition
+     */
+    public GameData getField() {
+        return field;
+    }
+
+    /**
+     * Get the operator of the condition.
+     *
+     * @return the operator of the condition
+     */
+    public String getOperator() {
+        return operator;
+    }
+
+    /**
+     * Get the value of the condition.
+     *
+     * @return the value of the condition
+     */
+    public String getValue() {
+        return value;
     }
 }

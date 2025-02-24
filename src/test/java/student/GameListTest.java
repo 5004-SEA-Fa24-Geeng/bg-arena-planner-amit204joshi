@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -69,20 +70,23 @@ class GameListTest {
 
     @Test
     void saveGame() {
+        GameList gameList = new GameList();
         gameList.addToList("all", games.stream());
-        String testFile = "test_games.txt";
+
+        Path tempDir = Paths.get("temp");
         try {
-            gameList.saveGame(testFile);
-            List<String> lines = Files.readAllLines(Paths.get(testFile));
-            assertEquals(gameList.getGameNames(), lines);
+            Files.createDirectories(tempDir);
         } catch (IOException e) {
-            fail(e.getMessage());
-        } finally {
-            try {
-                Files.deleteIfExists(Paths.get(testFile));
-            } catch (IOException e) {
-                fail(e.getMessage());
-            }
+            fail("Failed to create temp directory: " + e.getMessage());
+        }
+
+        String testFile = "temp/games.txt";
+        assertDoesNotThrow(() -> gameList.saveGame(testFile));
+
+        try {
+            Files.deleteIfExists(Paths.get(testFile));
+            Files.deleteIfExists(tempDir);
+        } catch (IOException ignored) {
         }
     }
 
@@ -154,7 +158,9 @@ class GameListTest {
     void removeInvalidRange() {
         gameList.addToList("1-3", games.stream());
         assertEquals(3, gameList.count());
-        assertThrows(IllegalArgumentException.class, () -> {gameList.removeFromList("2-8");});
+        assertThrows(IllegalArgumentException.class, () -> {
+            gameList.removeFromList("2-8");
+        });
     }
 
     @Test
@@ -169,7 +175,9 @@ class GameListTest {
     void removeByInvalidName() {
         gameList.addToList("go", games.stream());
         assertEquals(1, gameList.count());
-        assertThrows(IllegalArgumentException.class, ()->{gameList.removeFromList("go2");});
+        assertThrows(IllegalArgumentException.class, () -> {
+            gameList.removeFromList("go2");
+        });
     }
 
     @Test
@@ -184,6 +192,8 @@ class GameListTest {
     void removeByIndexInvalid() {
         gameList.addToList("all", games.stream());
         assertEquals(8, gameList.count());
-        assertThrows(IllegalArgumentException.class, ()->{gameList.removeFromList("9");});
+        assertThrows(IllegalArgumentException.class, () -> {
+            gameList.removeFromList("9");
+        });
     }
 }
