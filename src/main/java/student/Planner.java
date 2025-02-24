@@ -143,14 +143,6 @@ public class Planner implements IPlanner {
         String operator = components.getOperator();
         String value = components.getValue();
 
-        if (field == GameData.NAME) {
-            if (!Set.of("~=", "==", "!=").contains(operator)) {
-                throw new IllegalArgumentException(
-                        "Field 'name' does not support operator: " + operator
-                );
-            }
-        }
-
         return switch (field) {
             case NAME -> handleStringCondition(operator, value);
             case MIN_PLAYERS, MAX_PLAYERS, MIN_TIME, MAX_TIME, YEAR, RANK ->
@@ -163,7 +155,7 @@ public class Planner implements IPlanner {
     /**
      * Handles conditions for text fields (e.g., name).
      *
-     * @param operator The operator (e.g., "~=", "==", "!=")
+     * @param operator The operator
      * @param value    The value to compare against
      * @return A FilterCondition for text fields
      * @throws IllegalArgumentException If the operator is invalid
@@ -173,6 +165,10 @@ public class Planner implements IPlanner {
             case "~=" -> game -> game.getName().toLowerCase().contains(value.toLowerCase());
             case "=", "==" -> game -> game.getName().equalsIgnoreCase(value);
             case "!=" -> game -> !game.getName().equalsIgnoreCase(value);
+            case ">" -> game -> game.getName().compareToIgnoreCase(value) > 0;
+            case "<" -> game -> game.getName().compareToIgnoreCase(value) < 0;
+            case ">=" -> game -> game.getName().compareToIgnoreCase(value) >= 0;
+            case "<=" -> game -> game.getName().compareToIgnoreCase(value) <= 0;
             default -> throw new IllegalArgumentException("Invalid condition: " + operator);
         };
     }
