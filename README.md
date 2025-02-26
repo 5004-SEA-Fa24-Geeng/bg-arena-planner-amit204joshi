@@ -16,7 +16,9 @@ No.
   
 Did you use any external resources (you do not have to cite in class material)? (Cite them below)
 
-* one row per resource
+* Java Properties file (.properties) https://localizely.com/java-properties-file/. Accessed: 2025-02-25.
+
+* Who shaved Hitler’s mustache? The localizer https://www.polygon.com/gaming/506037/video-game-localization-explained. Accessed: 2025-02-25.
 
 
 (Optional) What was your favorite part of the assignment?
